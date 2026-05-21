@@ -31,6 +31,14 @@ export default class PlayScene extends Phaser.Scene {
             {
                 worldWidth: 2000, stars: 25, bombs: 2,
                 platforms: [{ x: 300, y: 450 }, { x: 700, y: 350 }, { x: 1100, y: 250 }, { x: 1500, y: 150 }, { x: 1800, y: 400 }, { x: 50, y: 300 }]
+            },
+            {
+                worldWidth: 2400, stars: 30, bombs: 3,
+                platforms: [{ x: 200, y: 400 }, { x: 600, y: 300 }, { x: 1000, y: 200 }, { x: 1400, y: 300 }, { x: 1800, y: 400 }, { x: 2200, y: 250 }]
+            },
+            {
+                worldWidth: 2800, stars: 35, bombs: 4,
+                platforms: [{ x: 150, y: 350 }, { x: 550, y: 250 }, { x: 950, y: 150 }, { x: 1350, y: 250 }, { x: 1750, y: 350 }, { x: 2150, y: 250 }, { x: 2550, y: 150 }]
             }
         ];
 
