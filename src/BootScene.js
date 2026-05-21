@@ -15,6 +15,7 @@ export default class BootScene extends Phaser.Scene {
 
         // Load original assets
         this.load.image('sky', 'assets/sky.png');
+        this.load.image('space_bg', 'assets/space_bg.png'); // New background
         this.load.image('ground', 'assets/platform.png');
         this.load.image('star', 'assets/star.png');
         this.load.spritesheet('dude', 'assets/dude.png', { frameWidth: 32, frameHeight: 48 });
@@ -54,6 +55,36 @@ export default class BootScene extends Phaser.Scene {
         sg.fillStyle(0xffffff, 1);
         sg.fillCircle(4, 4, 4);
         sg.generateTexture('spark', 8, 8);
+
+        // Power-up: Shield (Blue Circle)
+        const shieldG = this.make.graphics({x: 0, y: 0, add: false});
+        shieldG.lineStyle(3, 0x00ffff, 1);
+        shieldG.strokeCircle(12, 12, 10);
+        shieldG.fillStyle(0x0088ff, 0.6);
+        shieldG.fillCircle(12, 12, 10);
+        shieldG.generateTexture('powerup_shield', 24, 24);
+
+        // Power-up: Boots (Green Square)
+        const bootsG = this.make.graphics({x: 0, y: 0, add: false});
+        bootsG.lineStyle(3, 0x00ff00, 1);
+        bootsG.strokeRect(4, 4, 16, 16);
+        bootsG.fillStyle(0x00aa00, 0.6);
+        bootsG.fillRect(4, 4, 16, 16);
+        bootsG.generateTexture('powerup_boots', 24, 24);
+
+        // Power-up: Heart (Pink Diamond)
+        const heartG = this.make.graphics({x: 0, y: 0, add: false});
+        heartG.fillStyle(0xff00ff, 1);
+        heartG.beginPath();
+        heartG.moveTo(12, 2);
+        heartG.lineTo(22, 12);
+        heartG.lineTo(12, 22);
+        heartG.lineTo(2, 12);
+        heartG.closePath();
+        heartG.fillPath();
+        heartG.lineStyle(2, 0xffffff, 1);
+        heartG.strokePath();
+        heartG.generateTexture('powerup_heart', 24, 24);
 
         // Generate player animations here so they're available globally
         this.anims.create({
