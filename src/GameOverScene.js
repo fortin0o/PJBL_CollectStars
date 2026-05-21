@@ -13,9 +13,9 @@ export default class GameOverScene extends Phaser.Scene {
         this.add.rectangle(400, 300, 800, 600, 0x000000);
         
         // Handle high score
-        let highScore = localStorage.getItem('collectStars_highScore') || 0;
+        let highScore = parseInt(localStorage.getItem('collectStars_highScore') || '0', 10);
         let newHighScore = false;
-        
+
         if (this.score > highScore) {
             highScore = this.score;
             localStorage.setItem('collectStars_highScore', highScore);
