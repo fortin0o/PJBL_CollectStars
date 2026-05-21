@@ -33,7 +33,7 @@ export default class MenuScene extends Phaser.Scene {
 
         // Play Button
         const playBtn = this.createButton(400, 300, 'PLAY', () => {
-            this.scene.start('PlayScene');
+            this.scene.start('PlayScene', { level: 1, score: 0, lives: 3 });
         });
 
         // High Score display

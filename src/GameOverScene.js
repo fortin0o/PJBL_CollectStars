@@ -5,6 +5,7 @@ export default class GameOverScene extends Phaser.Scene {
 
     init(data) {
         this.score = data.score || 0;
+        this.win = data.win || false;
     }
 
     create() {
@@ -21,11 +22,14 @@ export default class GameOverScene extends Phaser.Scene {
             newHighScore = true;
         }
 
-        // Game Over Text
-        this.add.text(400, 150, 'GAME OVER', {
+        // Title Text
+        const titleString = this.win ? 'YOU WIN!' : 'GAME OVER';
+        const titleColor = this.win ? '#00ff00' : '#ff0000';
+        
+        this.add.text(400, 150, titleString, {
             fontFamily: '"Press Start 2P"',
             fontSize: '50px',
-            fill: '#ff0000',
+            fill: titleColor,
             stroke: '#ffffff',
             strokeThickness: 4
         }).setOrigin(0.5);
@@ -49,7 +53,7 @@ export default class GameOverScene extends Phaser.Scene {
 
         // Restart Button
         this.createButton(400, 450, 'PLAY AGAIN', () => {
-            this.scene.start('PlayScene');
+            this.scene.start('PlayScene', { level: 1, score: 0, lives: 3 });
         });
         
         // Menu Button
