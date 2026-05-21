@@ -16,7 +16,8 @@ export default class BootScene extends Phaser.Scene {
         // Load original assets
         this.load.image('sky', 'assets/sky.png');
         this.load.image('space_bg', 'assets/space_bg.png'); // New background
-        this.load.image('ground', 'assets/platform.png');
+        this.load.image('ground', 'assets/ground.png'); // new ground tile
+        this.load.image('enemy', 'assets/enemy.png'); // new enemy sprite
         this.load.image('star', 'assets/star.png');
         this.load.spritesheet('dude', 'assets/dude.png', { frameWidth: 32, frameHeight: 48 });
         // Load generated textures (ground and enemy will be created programmatically)

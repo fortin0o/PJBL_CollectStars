@@ -47,7 +47,9 @@ export default class PlayScene extends Phaser.Scene {
         // Scrolling Space Background
         this.bg = this.add.tileSprite(0, 0, 800, 600, 'space_bg').setOrigin(0, 0).setScrollFactor(0);
         
-        // Platforms
+        // Updated ground texture uses 'ground' asset (new tile)
+        // Platforms already use 'ground' texture, no change needed
+
         this.platforms = this.physics.add.staticGroup();
         for (let x = 0; x < worldWidth; x += 400) {
             this.platforms.create(x + 200, 568, 'ground').setScale(2).refreshBody();
@@ -73,7 +75,10 @@ export default class PlayScene extends Phaser.Scene {
         this.stars.children.iterate((c) => c.setBounceY(Phaser.Math.FloatBetween(0.4, 0.8)));
         
         this.bombs = this.physics.add.group();
+        this.enemies = this.physics.add.group();
         for (let i = 0; i < this.currentConfig.bombs; i++) this.spawnBomb();
+        // Spawn a single enemy per level
+        this.spawnEnemy();
 
         this.powerups = this.physics.add.group();
 
@@ -112,6 +117,7 @@ export default class PlayScene extends Phaser.Scene {
         this.physics.add.overlap(this.player, this.stars, this.collectStar, null, this);
         this.physics.add.overlap(this.player, this.powerups, this.collectPowerup, null, this);
         this.physics.add.collider(this.player, this.bombs, this.hitBomb, null, this);
+        this.physics.add.collider(this.player, this.enemies, this.hitEnemy, null, this);
         
         this.cursors = this.input.keyboard.createCursorKeys();
         this.createMobileControls();
@@ -290,6 +296,36 @@ export default class PlayScene extends Phaser.Scene {
         if (this.activeBuff === 'shield') this.player.setTint(0x00ffff);
         else if (this.activeBuff === 'boots') this.player.setTint(0x00ff00);
         else this.player.clearTint();
+    }
+
+    hitEnemy(player, enemy) {
+        // Enemy hit logic: similar to bomb but no explosion particles
+        if (this.activeBuff === 'shield') {
+            // Shield protects from enemy as well
+            this.enemies.remove(enemy, true, true);
+            return;
+        }
+        this.lives--;
+        this.livesText.setText('LIVES: ' + this.lives);
+        this.playSound('explosion');
+        this.cameras.main.shake(150, 0.015);
+        if (this.lives > 0) {
+            this.time.delayedCall(800, () => {
+                this.player.clearTint();
+                this.player.setPosition(100, 450);
+            });
+        } else {
+            this.gameOver = true;
+            this.time.delayedCall(1200, () => this.scene.start('GameOverScene', { score: this.score, win: false }));
+        }
+    }
+    // Spawn a single enemy per level
+    spawnEnemy() {
+        const spawnX = Phaser.Math.Between(100, this.currentConfig.worldWidth - 100);
+        const enemy = this.enemies.create(spawnX, 520, 'enemy');
+        enemy.setCollideWorldBounds(true);
+        enemy.setVelocityX(Phaser.Math.Between(-100, 100));
+        enemy.setBounce(1);
     }
 
     hitBomb(player, bomb) {
