@@ -75,10 +75,7 @@ export default class PlayScene extends Phaser.Scene {
         this.stars.children.iterate((c) => c.setBounceY(Phaser.Math.FloatBetween(0.4, 0.8)));
         
         this.bombs = this.physics.add.group();
-        this.enemies = this.physics.add.group();
-        for (let i = 0; i < this.currentConfig.bombs; i++) this.spawnBomb();
-        // Spawn a single enemy per level
-        this.spawnEnemy();
+
 
         this.powerups = this.physics.add.group();
 
@@ -117,7 +114,7 @@ export default class PlayScene extends Phaser.Scene {
         this.physics.add.overlap(this.player, this.stars, this.collectStar, null, this);
         this.physics.add.overlap(this.player, this.powerups, this.collectPowerup, null, this);
         this.physics.add.collider(this.player, this.bombs, this.hitBomb, null, this);
-        this.physics.add.collider(this.player, this.enemies, this.hitEnemy, null, this);
+        
         
         this.cursors = this.input.keyboard.createCursorKeys();
         this.createMobileControls();
@@ -298,35 +295,8 @@ export default class PlayScene extends Phaser.Scene {
         else this.player.clearTint();
     }
 
-    hitEnemy(player, enemy) {
-        // Enemy hit logic: similar to bomb but no explosion particles
-        if (this.activeBuff === 'shield') {
-            // Shield protects from enemy as well
-            this.enemies.remove(enemy, true, true);
-            return;
-        }
-        this.lives--;
-        this.livesText.setText('LIVES: ' + this.lives);
-        this.playSound('explosion');
-        this.cameras.main.shake(150, 0.015);
-        if (this.lives > 0) {
-            this.time.delayedCall(800, () => {
-                this.player.clearTint();
-                this.player.setPosition(100, 450);
-            });
-        } else {
-            this.gameOver = true;
-            this.time.delayedCall(1200, () => this.scene.start('GameOverScene', { score: this.score, win: false }));
-        }
-    }
-    // Spawn a single enemy per level
-    spawnEnemy() {
-        const spawnX = Phaser.Math.Between(100, this.currentConfig.worldWidth - 100);
-        const enemy = this.enemies.create(spawnX, 520, 'enemy');
-        enemy.setCollideWorldBounds(true);
-        enemy.setVelocityX(Phaser.Math.Between(-100, 100));
-        enemy.setBounce(1);
-    }
+
+
 
     hitBomb(player, bomb) {
         if (this.levelComplete) return;
