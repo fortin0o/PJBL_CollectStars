@@ -49,6 +49,12 @@ export default class BootScene extends Phaser.Scene {
 
         g.generateTexture('bomb', 24, 24);
 
+        // Generate a spark texture for particles
+        const sg = this.make.graphics({x: 0, y: 0, add: false});
+        sg.fillStyle(0xffffff, 1);
+        sg.fillCircle(4, 4, 4);
+        sg.generateTexture('spark', 8, 8);
+
         // Generate player animations here so they're available globally
         this.anims.create({
             key: 'left',
