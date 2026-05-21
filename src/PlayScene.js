@@ -8,26 +8,53 @@ export default class PlayScene extends Phaser.Scene {
         this.lives = 3;
         this.gameOver = false;
         
-        // Background
-        this.add.image(400, 300, 'sky');
+        // Define world size (3x wider than screen)
+        const worldWidth = 2400;
+        const worldHeight = 600;
+
+        // Set camera and physics bounds
+        this.cameras.main.setBounds(0, 0, worldWidth, worldHeight);
+        this.physics.world.setBounds(0, 0, worldWidth, worldHeight);
+        
+        // Background - Use a tileSprite to repeat the sky texture across the wide world
+        this.add.tileSprite(0, 0, worldWidth, worldHeight, 'sky').setOrigin(0, 0);
         
         // Platforms
         this.platforms = this.physics.add.staticGroup();
-        this.platforms.create(400, 568, 'ground').setScale(2).refreshBody();
-        this.platforms.create(600, 400, 'ground');
-        this.platforms.create(50, 250, 'ground');
-        this.platforms.create(750, 220, 'ground');
+        
+        // Ground covering the entire world
+        for (let x = 0; x < worldWidth; x += 400) {
+            this.platforms.create(x + 200, 568, 'ground').setScale(2).refreshBody();
+        }
+
+        // Scatter platforms throughout the wider level
+        const platformPositions = [
+            { x: 600, y: 400 },
+            { x: 50, y: 250 },
+            { x: 750, y: 220 },
+            { x: 1100, y: 350 },
+            { x: 1400, y: 200 },
+            { x: 1800, y: 400 },
+            { x: 2100, y: 250 }
+        ];
+
+        platformPositions.forEach(pos => {
+            this.platforms.create(pos.x, pos.y, 'ground');
+        });
         
         // Player
         this.player = this.physics.add.sprite(100, 450, 'dude');
         this.player.setBounce(0.2);
         this.player.setCollideWorldBounds(true);
         
-        // Stars
+        // Make camera follow player
+        this.cameras.main.startFollow(this.player, true, 0.08, 0.08);
+
+        // Stars - distribute across the wider world
         this.stars = this.physics.add.group({
             key: 'star',
-            repeat: 11,
-            setXY: { x: 12, y: 0, stepX: 70 }
+            repeat: 30, // Increased number of stars
+            setXY: { x: 12, y: 0, stepX: 75 }
         });
         
         this.stars.children.iterate((child) => {
@@ -37,13 +64,14 @@ export default class PlayScene extends Phaser.Scene {
         // Bombs
         this.bombs = this.physics.add.group();
         
-        // UI
+        // UI - setScrollFactor(0) ensures these elements stay pinned to the screen
         this.scoreText = this.add.text(16, 16, 'SCORE: 0', { 
             fontFamily: '"Press Start 2P"', fontSize: '20px', fill: '#000' 
-        });
+        }).setScrollFactor(0);
+
         this.livesText = this.add.text(580, 16, 'LIVES: 3', { 
             fontFamily: '"Press Start 2P"', fontSize: '20px', fill: '#d00' 
-        });
+        }).setScrollFactor(0);
         
         // Colliders
         this.physics.add.collider(this.player, this.platforms);
@@ -70,12 +98,12 @@ export default class PlayScene extends Phaser.Scene {
         this.mobileRight = false;
         this.mobileJump = false;
 
-        // Only show if touch is enabled
         if (!this.sys.game.device.input.touch) return;
 
-        const leftBtn = this.add.circle(80, 520, 50, 0xffffff, 0.2).setInteractive();
-        const rightBtn = this.add.circle(200, 520, 50, 0xffffff, 0.2).setInteractive();
-        const jumpBtn = this.add.circle(720, 520, 50, 0xffffff, 0.2).setInteractive();
+        // Use setScrollFactor(0) to fix controls to the camera viewport
+        const leftBtn = this.add.circle(80, 520, 50, 0xffffff, 0.2).setInteractive().setScrollFactor(0);
+        const rightBtn = this.add.circle(200, 520, 50, 0xffffff, 0.2).setInteractive().setScrollFactor(0);
+        const jumpBtn = this.add.circle(720, 520, 50, 0xffffff, 0.2).setInteractive().setScrollFactor(0);
 
         const addEvents = (btn, dirKey) => {
             btn.on('pointerdown', () => this[dirKey] = true);
@@ -87,10 +115,9 @@ export default class PlayScene extends Phaser.Scene {
         addEvents(rightBtn, 'mobileRight');
         addEvents(jumpBtn, 'mobileJump');
         
-        // Icons
-        this.add.text(80, 520, '<', { fontSize: '40px', fill: '#fff' }).setOrigin(0.5);
-        this.add.text(200, 520, '>', { fontSize: '40px', fill: '#fff' }).setOrigin(0.5);
-        this.add.text(720, 520, '^', { fontSize: '40px', fill: '#fff' }).setOrigin(0.5);
+        this.add.text(80, 520, '<', { fontSize: '40px', fill: '#fff' }).setOrigin(0.5).setScrollFactor(0);
+        this.add.text(200, 520, '>', { fontSize: '40px', fill: '#fff' }).setOrigin(0.5).setScrollFactor(0);
+        this.add.text(720, 520, '^', { fontSize: '40px', fill: '#fff' }).setOrigin(0.5).setScrollFactor(0);
     }
 
     update() {
@@ -127,14 +154,17 @@ export default class PlayScene extends Phaser.Scene {
         this.playSound('pickup');
         
         if (this.stars.countActive(true) === 0) {
-            // New wave
+            // New wave: Reactivate all stars across the wider world
             this.stars.children.iterate((child) => {
                 child.enableBody(true, child.x, 0, true, true);
             });
             
-            // Spawn a bomb
-            const x = (this.player.x < 400) ? Phaser.Math.Between(400, 800) : Phaser.Math.Between(0, 400);
-            const bomb = this.bombs.create(x, 16, 'bomb');
+            // Spawn a bomb far from the player
+            const spawnX = (this.player.x < 1200) 
+                ? Phaser.Math.Between(1200, 2400) 
+                : Phaser.Math.Between(0, 1200);
+                
+            const bomb = this.bombs.create(spawnX, 16, 'bomb');
             bomb.setBounce(1);
             bomb.setCollideWorldBounds(true);
             bomb.setVelocity(Phaser.Math.Between(-200, 200), 20);
@@ -156,13 +186,14 @@ export default class PlayScene extends Phaser.Scene {
             this.time.delayedCall(1000, () => {
                 this.physics.resume();
                 this.player.clearTint();
-                // Move player safely away from bombs
+                
+                // Respawn near the beginning
                 this.player.setPosition(100, 450);
                 
                 // Clear bombs near spawn
                 this.bombs.children.iterate((b) => {
-                    if (b && b.x < 200) {
-                        b.x = 600;
+                    if (b && b.x < 400) {
+                        b.x = 800; // Move it safely away
                     }
                 });
             });
