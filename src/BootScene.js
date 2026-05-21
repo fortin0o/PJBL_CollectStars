@@ -89,35 +89,9 @@ export default class BootScene extends Phaser.Scene {
         heartG.generateTexture('powerup_heart', 24, 24);
 
         // Generate player animations here so they're available globally
-        // Generate a better ground texture (brick pattern)
-        const groundG = this.make.graphics({x: 0, y: 0, add: false});
-        groundG.fillStyle(0x8B4513, 1);
-        groundG.fillRect(0, 0, 64, 64);
-        // Brick lines
-        groundG.lineStyle(2, 0x000000, 1);
-        for (let i = 0; i <= 64; i += 16) {
-            groundG.moveTo(i, 0);
-            groundG.lineTo(i, 64);
-        }
-        for (let j = 0; j <= 64; j += 16) {
-            groundG.moveTo(0, j);
-            groundG.lineTo(64, j);
-        }
-        groundG.strokePath();
-        groundG.generateTexture('ground', 64, 64);
-
-        // Generate enemy texture (red triangle)
-        const enemyG = this.make.graphics({x: 0, y: 0, add: false});
-        enemyG.fillStyle(0xff4444, 1);
-        enemyG.beginPath();
-        enemyG.moveTo(12, 0);
-        enemyG.lineTo(24, 24);
-        enemyG.lineTo(0, 24);
-        enemyG.closePath();
-        enemyG.fillPath();
-        enemyG.lineStyle(2, 0x880000, 1);
-        enemyG.strokePath();
-        enemyG.generateTexture('enemy', 24, 24);
+        // Load generated textures (ground tile and enemy)
+        // These assets will be placed in the assets folder as 'ground_tile.png' and 'enemy.png'
+        // No procedural generation needed here; textures are loaded in preload.
 
         this.anims.create({
             key: 'left',
