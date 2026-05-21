@@ -28,7 +28,7 @@ export default class GameOverScene extends Phaser.Scene {
         
         this.add.text(400, 150, titleString, {
             fontFamily: '"Press Start 2P"',
-            fontSize: '50px',
+            fontSize: '40px',
             fill: titleColor,
             stroke: '#ffffff',
             strokeThickness: 4
@@ -37,7 +37,7 @@ export default class GameOverScene extends Phaser.Scene {
         // Score Text
         this.add.text(400, 250, `SCORE: ${this.score}`, {
             fontFamily: '"Press Start 2P"',
-            fontSize: '30px',
+            fontSize: '24px',
             fill: '#ffffff'
         }).setOrigin(0.5);
 
@@ -47,7 +47,7 @@ export default class GameOverScene extends Phaser.Scene {
         
         this.add.text(400, 320, hsText, {
             fontFamily: '"Press Start 2P"',
-            fontSize: '24px',
+            fontSize: '20px',
             fill: hsColor
         }).setOrigin(0.5);
 

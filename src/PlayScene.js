@@ -100,13 +100,13 @@ export default class PlayScene extends Phaser.Scene {
         });
 
         // UI
-        this.scoreText = this.add.text(16, 16, 'SCORE: ' + this.score, { fontFamily: '"Press Start 2P"', fontSize: '20px', fill: '#fff' }).setScrollFactor(0).setDepth(10);
-        this.livesText = this.add.text(580, 16, 'LIVES: ' + this.lives, { fontFamily: '"Press Start 2P"', fontSize: '20px', fill: '#fff', stroke: '#d00', strokeThickness: 4 }).setScrollFactor(0).setDepth(10);
-        this.levelText = this.add.text(400, 16, 'MAP ' + this.level, { fontFamily: '"Press Start 2P"', fontSize: '20px', fill: '#0ff' }).setOrigin(0.5, 0).setScrollFactor(0).setDepth(10);
+        this.scoreText = this.add.text(16, 16, 'SCORE: ' + this.score, { fontFamily: '"Press Start 2P"', fontSize: '16px', fill: '#fff' }).setScrollFactor(0).setDepth(10);
+        this.livesText = this.add.text(580, 16, 'LIVES: ' + this.lives, { fontFamily: '"Press Start 2P"', fontSize: '16px', fill: '#fff', stroke: '#d00', strokeThickness: 4 }).setScrollFactor(0).setDepth(10);
+        this.levelText = this.add.text(400, 16, 'MAP ' + this.level, { fontFamily: '"Press Start 2P"', fontSize: '16px', fill: '#0ff' }).setOrigin(0.5, 0).setScrollFactor(0).setDepth(10);
         
-        this.buffText = this.add.text(16, 45, '', { fontFamily: '"Press Start 2P"', fontSize: '14px', fill: '#0f0' }).setScrollFactor(0).setDepth(10);
+        this.buffText = this.add.text(16, 45, '', { fontFamily: '"Press Start 2P"', fontSize: '12px', fill: '#0f0' }).setScrollFactor(0).setDepth(10);
 
-        this.centerText = this.add.text(400, 300, '', { fontFamily: '"Press Start 2P"', fontSize: '40px', fill: '#ff0', stroke: '#000', strokeThickness: 6 }).setOrigin(0.5).setScrollFactor(0).setDepth(10).setVisible(false);
+        this.centerText = this.add.text(400, 300, '', { fontFamily: '"Press Start 2P"', fontSize: '32px', fill: '#ff0', stroke: '#000', strokeThickness: 6 }).setOrigin(0.5).setScrollFactor(0).setDepth(10).setVisible(false);
 
         // Colliders
         this.physics.add.collider(this.player, this.platforms);
@@ -136,7 +136,7 @@ export default class PlayScene extends Phaser.Scene {
             btn.on('pointerdown', () => this[key] = true);
             btn.on('pointerup', () => this[key] = false);
             btn.on('pointerout', () => this[key] = false);
-            this.add.text(x, 520, txt, { fontSize: '40px', fill: '#fff' }).setOrigin(0.5).setScrollFactor(0).setDepth(10);
+            this.add.text(x, 520, txt, { fontSize: '28px', fill: '#fff' }).setOrigin(0.5).setScrollFactor(0).setDepth(10);
         };
         addBtn(80, '<', 'mobileLeft'); addBtn(200, '>', 'mobileRight'); addBtn(720, '^', 'mobileJump');
     }
@@ -372,15 +372,15 @@ export default class PlayScene extends Phaser.Scene {
         
         if (type === 'jump') {
             osc.type = 'square'; osc.frequency.setValueAtTime(150, now); osc.frequency.exponentialRampToValueAtTime(400, now + 0.1);
-            gainNode.gain.setValueAtTime(0.05, now); gainNode.gain.exponentialRampToValueAtTime(0.01, now + 0.1);
+            gainNode.gain.setValueAtTime(0.025, now); gainNode.gain.exponentialRampToValueAtTime(0.01, now + 0.1);
             osc.start(now); osc.stop(now + 0.1);
         } else if (type === 'pickup') {
             osc.type = 'sine'; osc.frequency.setValueAtTime(600, now); osc.frequency.setValueAtTime(1200, now + 0.05);
-            gainNode.gain.setValueAtTime(0.1, now); gainNode.gain.exponentialRampToValueAtTime(0.01, now + 0.1);
+            gainNode.gain.setValueAtTime(0.05, now); gainNode.gain.exponentialRampToValueAtTime(0.01, now + 0.1);
             osc.start(now); osc.stop(now + 0.1);
         } else if (type === 'explosion') {
             osc.type = 'sawtooth'; osc.frequency.setValueAtTime(100, now); osc.frequency.exponentialRampToValueAtTime(10, now + 0.3);
-            gainNode.gain.setValueAtTime(0.2, now); gainNode.gain.exponentialRampToValueAtTime(0.01, now + 0.3);
+            gainNode.gain.setValueAtTime(0.1, now); gainNode.gain.exponentialRampToValueAtTime(0.01, now + 0.3);
             osc.start(now); osc.stop(now + 0.3);
         }
     }
