@@ -58,6 +58,11 @@ export default class PlayScene extends Phaser.Scene {
         
         // Mobile controls
         this.createMobileControls();
+
+        // Audio Context setup
+        if (!window.audioCtx) {
+            window.audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        }
     }
 
     createMobileControls() {
@@ -110,6 +115,7 @@ export default class PlayScene extends Phaser.Scene {
 
         if (jumpDown && this.player.body.touching.down) {
             this.player.setVelocityY(-330);
+            this.playSound('jump');
         }
     }
 
@@ -118,6 +124,7 @@ export default class PlayScene extends Phaser.Scene {
         
         this.score += 10;
         this.scoreText.setText('SCORE: ' + this.score);
+        this.playSound('pickup');
         
         if (this.stars.countActive(true) === 0) {
             // New wave
@@ -142,6 +149,7 @@ export default class PlayScene extends Phaser.Scene {
         
         this.lives--;
         this.livesText.setText('LIVES: ' + this.lives);
+        this.playSound('explosion');
         
         if (this.lives > 0) {
             // Flash and respawn
@@ -163,6 +171,45 @@ export default class PlayScene extends Phaser.Scene {
             this.time.delayedCall(1500, () => {
                 this.scene.start('GameOverScene', { score: this.score });
             });
+        }
+    }
+
+    playSound(type) {
+        const ctx = window.audioCtx;
+        if (ctx.state === 'suspended') ctx.resume();
+        
+        const osc = ctx.createOscillator();
+        const gainNode = ctx.createGain();
+        
+        osc.connect(gainNode);
+        gainNode.connect(ctx.destination);
+        
+        const now = ctx.currentTime;
+        
+        if (type === 'jump') {
+            osc.type = 'square';
+            osc.frequency.setValueAtTime(150, now);
+            osc.frequency.exponentialRampToValueAtTime(400, now + 0.1);
+            gainNode.gain.setValueAtTime(0.05, now);
+            gainNode.gain.exponentialRampToValueAtTime(0.01, now + 0.1);
+            osc.start(now);
+            osc.stop(now + 0.1);
+        } else if (type === 'pickup') {
+            osc.type = 'sine';
+            osc.frequency.setValueAtTime(600, now);
+            osc.frequency.setValueAtTime(1200, now + 0.05);
+            gainNode.gain.setValueAtTime(0.1, now);
+            gainNode.gain.exponentialRampToValueAtTime(0.01, now + 0.1);
+            osc.start(now);
+            osc.stop(now + 0.1);
+        } else if (type === 'explosion') {
+            osc.type = 'sawtooth';
+            osc.frequency.setValueAtTime(100, now);
+            osc.frequency.exponentialRampToValueAtTime(10, now + 0.3);
+            gainNode.gain.setValueAtTime(0.2, now);
+            gainNode.gain.exponentialRampToValueAtTime(0.01, now + 0.3);
+            osc.start(now);
+            osc.stop(now + 0.3);
         }
     }
 }
