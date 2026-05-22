@@ -1,8 +1,4 @@
-import BootScene from './BootScene.js';
-import MenuScene from './MenuScene.js';
-import PlayScene from './PlayScene.js';
-import GameOverScene from './GameOverScene.js';
-
+// Scene classes are loaded via script tags in index.html
 const config = {
     type: Phaser.AUTO,
     width: 800,
