@@ -125,6 +125,7 @@ class PlayScene extends Phaser.Scene {
         
         
         this.cursors = this.input.keyboard.createCursorKeys();
+        this.wasd = this.input.keyboard.addKeys({ up: 'W', left: 'A', down: 'S', right: 'D' });
         this.createMobileControls();
 
         if (!window.audioCtx) window.audioCtx = new (window.AudioContext || window.webkitAudioContext)();
@@ -156,9 +157,9 @@ class PlayScene extends Phaser.Scene {
         // Parallax background scroll
         this.bg.tilePositionX = this.cameras.main.scrollX * 0.3;
 
-        const leftDown = this.cursors.left.isDown || this.mobileLeft;
-        const rightDown = this.cursors.right.isDown || this.mobileRight;
-        const jumpDown = this.cursors.up.isDown || this.mobileJump;
+        const leftDown = this.cursors.left.isDown || this.wasd.left.isDown || this.mobileLeft;
+        const rightDown = this.cursors.right.isDown || this.wasd.right.isDown || this.mobileRight;
+        const jumpDown = this.cursors.up.isDown || this.wasd.up.isDown || this.mobileJump;
         
         const speedMultiplier = this.activeBuff === 'boots' ? 1.5 : 1;
         const jumpMultiplier = this.activeBuff === 'boots' ? 1.2 : 1;
