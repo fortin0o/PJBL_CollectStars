@@ -11,7 +11,7 @@ export default class GameOverScene extends Phaser.Scene {
     create() {
         // Dark background
         this.add.rectangle(400, 300, 800, 600, 0x000000);
-        
+
         // Handle high score
         let highScore = parseInt(localStorage.getItem('collectStars_highScore') || '0', 10);
         let newHighScore = false;
@@ -25,7 +25,7 @@ export default class GameOverScene extends Phaser.Scene {
         // Title Text
         const titleString = this.win ? 'YOU WIN!' : 'GAME OVER';
         const titleColor = this.win ? '#00ff00' : '#ff0000';
-        
+
         this.add.text(400, 150, titleString, {
             fontFamily: '"Press Start 2P"',
             fontSize: '40px',
@@ -44,7 +44,7 @@ export default class GameOverScene extends Phaser.Scene {
         // High Score Text
         const hsText = newHighScore ? 'NEW HIGH SCORE!' : `HIGH SCORE: ${highScore}`;
         const hsColor = newHighScore ? '#ffff00' : '#aaaaaa';
-        
+
         this.add.text(400, 320, hsText, {
             fontFamily: '"Press Start 2P"',
             fontSize: '20px',
@@ -55,7 +55,7 @@ export default class GameOverScene extends Phaser.Scene {
         this.createButton(400, 450, 'PLAY AGAIN', () => {
             this.scene.start('PlayScene', { level: 1, score: 0, lives: 3 });
         });
-        
+
         // Menu Button
         this.createButton(400, 520, 'MAIN MENU', () => {
             this.scene.start('MenuScene');
@@ -81,9 +81,9 @@ export default class GameOverScene extends Phaser.Scene {
 
         const container = this.add.container(0, 0, [bg, btnText]);
         container.setSize(250, 50);
-        
+
         const zone = this.add.zone(x, y, 250, 50).setInteractive({ useHandCursor: true });
-        
+
         zone.on('pointerover', () => {
             drawBg(0xee5555);
             this.tweens.add({
@@ -114,7 +114,7 @@ export default class GameOverScene extends Phaser.Scene {
             container.y -= 2;
             onClick();
         });
-        
+
         return container;
     }
 }
