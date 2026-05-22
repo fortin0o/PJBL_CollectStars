@@ -9,18 +9,7 @@
 - Mobile‑friendly controls.
 - Clean UI that scales for desktop and mobile.
 
-## Getting Started
-
-1. **Install dependencies** (if using a bundler, otherwise just open the `index.html`):
-   ```bash
-   npm install
-   ```
-2. **Run a development server** (e.g., using Vite or simple http‑server):
-   ```bash
-   npx vite
-   ```
-   The game will be available at `http://localhost:5173`.
-3. **Play the game** by opening the page in a browser.
+**Play the game** by opening this link ](https://fortin0o.github.io/PJBL_CollectStars/)
 
 ## Controls
 
